@@ -1,0 +1,11 @@
+<launch>
+
+  <arg name="ns" default='sim_1'/>
+  <arg name="model" default="burger"/>
+
+  <node name="sensor_transform_node" type="sensor_transform_ros_node" pkg="sensor_transform_ros" >
+    <remap from="/clock"             to="/$(arg ns)/clock"/>
+    <param name="/robot_tf_id"    value="$(arg ns)_$(arg model)"/>
+  </node>
+
+</launch>
