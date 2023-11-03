@@ -64,18 +64,21 @@ void matchpointcloudCallback(const sensor_msgs::PointCloud2::ConstPtr& msg)
         geometry_msgs::Pose pose_msg;
         pose_msg.position.x = point.x;
         pose_msg.position.y = point.y;
-        pose_msg.position.z = range;
+        pose_msg.position.z = 0.0;
 
         // Pose 메시지를 PoseArray에 추가
         pose_array_msg.poses.push_back(pose_msg);
     }
     matchpose_array_pub.publish(pose_array_msg);
 } 
+
 int main(int argc, char** argv)
 {
     ros::init(argc, argv, "pointcloud_to_laserscan_node");
     ros::NodeHandle nh;
-    nh.param<std::string>("/sensor_transform_node/robot_tf_id", robot_tf_id_, "sim_1_burger");
+    ros::NodeHandle nh_priv("~");
+
+    nh_priv.param<std::string>("sensor_transform_node/robot_tf_id", robot_tf_id_, "sim_1_burger");
     ROS_WARN("[Sensor_Transform]: robot_tf_id:%s", robot_tf_id_.c_str());
     ros::Subscriber unpointcloud_sub = nh.subscribe<sensor_msgs::PointCloud2>("/scan_unmatched", 1, unmatchpointcloudCallback);
     ros::Subscriber matchpointcloud_sub = nh.subscribe<sensor_msgs::PointCloud2>("/scan_matched", 1, matchpointcloudCallback);
